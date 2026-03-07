@@ -3,10 +3,26 @@
 	This problem requires you to implement a sorting algorithm
 	you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
-// I AM NOT DONE
 
-fn sort<T>(array: &mut [T]){
-	//TODO
+fn sort(array: &mut [i32]){
+	//bubble sorting
+    /* for i in 0..array.len() {
+        for j in 0..array.len() - i - 1 {
+            if array[j] > array[j + 1] {
+                array.swap(j, j + 1);
+            }
+        }
+    } */
+   //insertion sorting
+   // 已排序区间为[0,i-1]，未排序区间为[i,len-1]
+    for i in 1..array.len() {
+        let mut j = i;
+        // 从已排序区间末尾开始，如果当前元素大于前一个元素，则交换位置
+        while j > 0 && array[j - 1] > array[j] {
+            array.swap(j - 1, j);
+            j -= 1;
+        }
+    }
 }
 #[cfg(test)]
 mod tests {

@@ -1,9 +1,9 @@
 /*
 	dfs
 	This problem requires you to implement a basic DFS traversal
+    DFS（Depth-First Search，深度优先搜索） 是一种用于遍历或搜索树/图的算法。它的核心思想是：尽可能深地探索分支，直到无法继续，然后回溯。
 */
 
-// I AM NOT DONE
 use std::collections::HashSet;
 
 struct Graph {
@@ -23,7 +23,13 @@ impl Graph {
     }
 
     fn dfs_util(&self, v: usize, visited: &mut HashSet<usize>, visit_order: &mut Vec<usize>) {
-        //TODO
+        visited.insert(v);
+        visit_order.push(v);
+        for &next in &self.adj[v] {
+            if !visited.contains(&next) {
+                self.dfs_util(next, visited, visit_order);
+            }
+        }
     }
 
     // Perform a depth-first search on the graph, return the order of visited nodes

@@ -2,7 +2,7 @@
 	queue
 	This question requires you to use queues to implement the functionality of the stac
 */
-// I AM NOT DONE
+
 
 #[derive(Debug)]
 pub struct Queue<T> {
@@ -52,30 +52,51 @@ impl<T> Default for Queue<T> {
     }
 }
 
-pub struct myStack<T>
+pub struct MyStack<T:Clone + std::fmt::Debug>
 {
 	//TODO
+    length:usize,
 	q1:Queue<T>,
 	q2:Queue<T>
 }
-impl<T> myStack<T> {
+impl<T:Clone + std::fmt::Debug> MyStack<T> {
     pub fn new() -> Self {
         Self {
 			//TODO
+            length :0,
 			q1:Queue::<T>::new(),
 			q2:Queue::<T>::new()
         }
     }
     pub fn push(&mut self, elem: T) {
         //TODO
+        self.q1.enqueue(elem);
+        self.length +=1;
     }
     pub fn pop(&mut self) -> Result<T, &str> {
         //TODO
-		Err("Stack is empty")
+        if self.length == 0{Err("Stack is empty")}
+		else{
+            let mut rnum=(*self.q1.peek().unwrap()).clone(); 
+            
+            while !self.q1.is_empty(){
+                let num = self.q1.dequeue().unwrap();
+                if self.q1.size()==0{rnum = num;}
+                else{self.q2.enqueue(num);}    // print!("{},{:?}\n",self.q1.size(),self.q2.elements);          
+            }
+              while !self.q2.is_empty(){
+                let num = self.q2.dequeue().unwrap();
+                self.q1.enqueue(num);
+            }
+            self.length -= 1;
+           
+            return Ok(rnum);
+        }
     }
     pub fn is_empty(&self) -> bool {
 		//TODO
-        true
+        if self.length == 0{true}
+        else{false}
     }
 }
 
@@ -85,7 +106,7 @@ mod tests {
 	
 	#[test]
 	fn test_queue(){
-		let mut s = myStack::<i32>::new();
+		let mut s = MyStack::<i32>::new();
 		assert_eq!(s.pop(), Err("Stack is empty"));
         s.push(1);
         s.push(2);

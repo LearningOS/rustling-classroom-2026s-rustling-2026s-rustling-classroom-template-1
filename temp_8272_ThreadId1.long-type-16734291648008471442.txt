@@ -1,0 +1,1 @@
+Filter<std::collections::hash_map::Values<'_, String, Progress>, {closure@exercises/iterators/iterators5.rs:69:35: 69:38}>

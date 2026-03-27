@@ -3,7 +3,9 @@
 	This question requires you to use a stack to achieve a bracket match
 */
 
-// I AM NOT DONE
+use std::iter::Skip;
+
+
 #[derive(Debug)]
 struct Stack<T> {
 	size: usize,
@@ -31,8 +33,13 @@ impl<T> Stack<T> {
 		self.size += 1;
 	}
 	fn pop(&mut self) -> Option<T> {
-		// TODO
-		None
+		if 0 == self.size{
+			return None;
+		}  else{
+			self.size-=1;
+			return self.data.pop();
+		}
+		
 	}
 	fn peek(&self) -> Option<&T> {
 		if 0 == self.size {
@@ -102,7 +109,60 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 fn bracket_match(bracket: &str) -> bool
 {
 	//TODO
-	true
+	if bracket.len()==0 {
+		return true;
+	}
+	else{
+		let mut stk1 = Stack::new();
+		let mut stk2 = Stack::new();
+		for i in bracket.chars(){
+			match i{
+				'('|')'|'['|']'|'{'|'}'=> stk1.push(i),
+				 _ => continue,
+			};
+		}
+		print!("{:?}\n",stk1);
+		if stk1.len()==0 {return true;}
+		else{
+			while !stk1.is_empty(){
+				let now_bracket = stk1.pop().unwrap();
+				match now_bracket{
+					'('|'{'|'['=> {
+						if stk2.len()== 0{
+							return false;
+						}else{
+							let now_bracket2 = stk2.pop().unwrap();
+							match now_bracket {
+								'('=>{
+									if now_bracket2 != ')' {
+										return false;
+									}
+								}
+								'['=>{
+									if now_bracket2 != ']' {
+										return false;
+									}
+								}
+								'{'=>{
+									if now_bracket2 != '}' {
+										return false;
+									}
+								}
+								 _ => todo!(),
+							}
+						}		
+					}
+					')'|']'|'}'=> stk2.push(now_bracket),
+					 _ => todo!(),
+				}
+				
+			}
+			if stk1.is_empty()&&stk2.is_empty(){
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 #[cfg(test)]

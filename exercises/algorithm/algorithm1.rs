@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -14,7 +14,7 @@ struct Node<T> {
     next: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Node<T> {
+impl<T: Ord + Clone>Node<T> {
     fn new(t: T) -> Node<T> {
         Node {
             val: t,
@@ -29,13 +29,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: Ord + Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: Ord + Clone>LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -72,11 +72,87 @@ impl<T> LinkedList<T> {
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        //code of "get" edv
+        // let mut list_a = list_a;
+        // let mut list_b = list_b;
+        // let mut a = list_a.length;
+        // let mut b = list_b.length;
+        // let mut list_c = LinkedList::<T>::new();
+        // list_c.length = &a + &b;
+        // while a != 0 && b != 0 {
+        //     let la = list_a.length-a;
+        //     let lb = list_b.length-b;
+        //     let na = list_a.get(la as i32).unwrap();
+        //     let nb = list_b.get(lb as i32).unwrap(); 
+        //     if *na >= *nb {
+        //         list_c.add(nb.clone());
+        //         b-=1;
+        //     }else {
+        //         list_c.add(na.clone());
+        //         a-=1;
+        //     }
+        // }  
+        // if b != 0{
+        //     for _ in 0..b{
+        //             let lb = list_b.length-b;
+        //                 list_c.add(list_b.get(lb as i32).unwrap().clone());
+        //             b-=1;}
+        // }else {
+        //         for _ in 0..a{
+        //         let la = list_a.length-a;
+        //         list_c.add(list_a.get(la as i32).unwrap().clone());
+        //             a-=1;
+        //     }
+        //     }
+        // list_c     
+        let mut list_c = LinkedList::<T>::new();
+       
+        let mut ptr  = None;
+        let mut list_a = list_a;
+        let mut list_b = list_b;
+        let mut current_a = list_a.start;
+        let mut current_b = list_b.start;
+        let mut current_c = list_c.start;    
+        let mut con_a = 0;
+        let mut con_b = 0;
+        loop{
+            if con_a == list_a.length||con_b == list_b.length {
+                if con_a==list_a.length{
+                    unsafe {(*(current_c.unwrap()).as_ptr()).next = current_b;}                     
+                }else{
+                    unsafe { (*(current_c.unwrap()).as_ptr()).next = current_a;}                  
+                }
+                break;
+            }
+            else {
+                unsafe {
+                    let a_num =(*(current_a.unwrap()).as_ptr()).val.clone();
+                    let b_num =(*(current_b.unwrap()).as_ptr()).val.clone();
+                    if a_num <= b_num{
+                        if current_c.is_none(){
+                            ptr = current_a;
+                        }else{
+                            (*(current_c.unwrap()).as_ptr()).next = current_a;
+                            
+                        }current_c = current_a;
+                        current_a = (*(current_a.unwrap()).as_ptr()).next;
+                        con_a +=1;
+                    }else{
+                        if current_c.is_none(){
+                            ptr = current_b;
+                        }else{
+                            (*(current_c.unwrap()).as_ptr()).next = current_b;
+                        }
+                        current_c = current_b;
+                        current_b = (*(current_b.unwrap()).as_ptr()).next;
+                        con_b +=1;
+                    }                  
+                }                
+            }
         }
+        list_c.length = list_a.length + list_b.length;
+        list_c.start = ptr;
+        list_c
 	}
 }
 

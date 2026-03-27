@@ -2,7 +2,7 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
+
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -38,6 +38,26 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        self.items.push(value);
+        self.count+=1;
+        
+        // if self.count != 1{
+        //     let mut i = self.count;
+        //     while i != 0{
+        //         let fp_idx = self.parent_idx(i);//
+        //         let min_idx = self.smallest_child_idx(fp_idx);
+        //         self.items.swap(i, min_idx);
+        //     }
+        // }
+        let mut i =self.count;
+        while  i > 1 {
+            let parent = self.parent_idx(i);
+            if (self.comparator)(&self.items[i],&self.items[parent]){
+                self.items.swap(i, parent);
+                i = parent;
+            }else {break;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,7 +78,25 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+        // let num1 = self.items[idx];
+        // let mut idx1=idx;
+        // if self.children_present(idx) {
+        //     idx1 = idx1*2+1;
+        // }else {
+        //     idx1=idx*2;
+        // }
+		// let num2 = self.items[idx1];
+        // if num1 < num2 { idx}
+        // else { idx1}
+        let left = self.left_child_idx(idx);
+        if left >self.count{
+            return  idx;
+        }
+        let right = self.right_child_idx(idx);
+        if right > self.count{
+            return left;
+        }
+        if(self.comparator)(&self.items[left],&self.items[right]){left}else{right}
     }
 }
 
@@ -84,9 +122,25 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
+     
+        if self.len()==0{return None;} 
         //TODO
-		None
+		let result =self.items.swap_remove(1);
+        self.count-=1;
+        if self.count > 0{
+            let mut i =1;
+            while i <= self.count{
+                let child = self.smallest_child_idx(i);
+                if child!= i&&(self.comparator)(&self.items[child],&self.items[i]){
+                    self.items.swap(i, child);
+                    i = child;
+                }else{
+                    break;
+                }
+            }
+        }Some(result)
     }
+    
 }
 
 pub struct MinHeap;

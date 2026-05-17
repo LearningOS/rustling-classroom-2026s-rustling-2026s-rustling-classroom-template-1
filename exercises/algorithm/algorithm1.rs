@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -69,15 +68,55 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+
+    fn get_next_ptr(&mut self, node: Option<NonNull<Node<T>>>) -> Option<NonNull<Node<T>>> {
+        match node {
+            None => None,
+            Some(ptr) => {
+                unsafe {
+                    ptr.as_ref().next
+                }
+            }
         }
-	}
+    }
+
+	pub fn merge(list_a: LinkedList<T>, list_b: LinkedList<T>) -> Self 
+    where T: PartialOrd + Clone
+    {
+        let mut merged = Self::new();
+        if list_a.start.is_none() {
+            return list_b;
+        }       
+        if list_b.start.is_none() {
+            return list_a;
+        }
+        let mut list_a = list_a;
+        let mut list_b = list_b;
+        let mut start_a = list_a.start;
+        let mut start_b = list_b.start;
+        while let (Some(val1), Some(val2)) = (
+            list_a.get_ith_node(start_a, 0),
+            list_b.get_ith_node(start_b, 0),
+        ) {
+            if val1 <= val2 {
+                merged.add(val1.clone() /* I want to partially move val here */);
+                start_a = list_a.get_next_ptr(start_a);
+            } else {
+                merged.add(val2.clone());
+                start_b = list_b.get_next_ptr(start_b);
+            }
+        }
+        let (mut rest, mut list) = if start_a.is_some() {
+            (start_a, list_a) 
+        } else {
+            (start_b, list_b)
+        };
+        while let Some(val) = list.get_ith_node(rest, 0) {
+            merged.add(val.clone());
+            rest = list.get_next_ptr(rest);
+        }
+        merged
+    }
 }
 
 impl<T> Display for LinkedList<T>

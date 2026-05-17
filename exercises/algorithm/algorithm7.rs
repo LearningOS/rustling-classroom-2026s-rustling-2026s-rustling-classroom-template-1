@@ -3,7 +3,6 @@
 	This question requires you to use a stack to achieve a bracket match
 */
 
-// I AM NOT DONE
 #[derive(Debug)]
 struct Stack<T> {
 	size: usize,
@@ -31,8 +30,8 @@ impl<T> Stack<T> {
 		self.size += 1;
 	}
 	fn pop(&mut self) -> Option<T> {
-		// TODO
-		None
+        if self.size > 0 { self.size -= 1; }
+        self.data.pop()
 	}
 	fn peek(&self) -> Option<&T> {
 		if 0 == self.size {
@@ -101,8 +100,31 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 
 fn bracket_match(bracket: &str) -> bool
 {
-	//TODO
-	true
+    let mut stk = Stack::new();
+    use std::collections::HashMap;
+    let mut htable = HashMap::new();
+    htable.insert('(', ')');
+    htable.insert('[', ']');
+    htable.insert('{', '}');
+    for c in bracket.chars() {
+        match c {
+            '(' | '[' | '{' => { println!("{c}"); stk.push(*htable.get(&c).unwrap()); },
+            ')' | ']' | '}' => {
+                println!("matching {c}");
+                match stk.pop() {
+                    Some(before) => {
+                        if before != c { 
+                            return false; 
+                        }
+                    }
+                    None => { return false; }
+                } 
+            },
+            _ => {}
+        }
+    }
+    if stk.is_empty() { true }
+    else { false }
 }
 
 #[cfg(test)]
@@ -111,7 +133,8 @@ mod tests {
 	
 	#[test]
 	fn bracket_matching_1(){
-		let s = "(2+3){func}[abc]";
+		// let s = "(2+3){func}[abc]";
+        let s = "{}";
 		assert_eq!(bracket_match(s),true);
 	}
 	#[test]

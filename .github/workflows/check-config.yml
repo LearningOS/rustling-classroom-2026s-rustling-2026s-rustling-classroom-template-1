@@ -1,0 +1,24 @@
+name: Check student configuration
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  configuration:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Check assigned identity and spring course credentials
+        env:
+          STUDENT_GITHUB: ${{ vars.STUDENT_GITHUB }}
+          COURSE_ID: ${{ secrets.RUSTLINGS_2026_SPRING_COURSE_ID }}
+          COURSE_TOKEN: ${{ secrets.RUSTLINGS_2026_SPRING_TOKEN }}
+          COURSE_API_URL: ${{ secrets.COURSE_POST_API }}
+        run: python3 .github/check_enrollment.py

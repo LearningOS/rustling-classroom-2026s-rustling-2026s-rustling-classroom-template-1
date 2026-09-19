@@ -1,4 +1,4 @@
-name: GitHub Classroom Workflow
+name: Spring course grading
 
 on:
   push:
@@ -15,6 +15,7 @@ env:
 
 jobs:
   build:
+    if: github.repository_owner == 'LearningOS' && github.repository != 'LearningOS/rustling-classroom-2026s-rustling-2026s-rustling-classroom-template-1' && !startsWith(github.event.repository.name, 'preparing-') && github.event_name != 'pull_request' && vars.STUDENT_GITHUB != '' && github.actor == vars.STUDENT_GITHUB
     name: Autograding
     runs-on: ubuntu-latest
     outputs:
